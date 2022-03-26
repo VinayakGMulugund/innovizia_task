@@ -77,4 +77,31 @@ app.post('/', (req,res)=>{
 })
 
 
+//customize order 
 
+app.post('/customize', (req,res)=>{
+    const {no} = req.body;
+    var hasTopping =false
+    var toppings = ''
+    con.query('select hasToppings from items where no=?', no, (err,result)=>{
+        if(err) console.log(err)
+        else hasTopping = result;
+
+        if(hasTopping==false) res.send('no toppings available for this item')
+        else {
+            con.query('select * from toppings', (err,ress)=>{
+                if(err) console.log(err)
+                res.send(`toppings available are ${JSON.stringify(ress)}`)
+            })
+        }
+    })
+})
+
+//add topping
+app.post('/customize-add', (req,res)=> {
+    const id = req.body
+    con.query('select name from toppings where id=?', id, (err,result)=>{
+        if(err) console.log(err)
+        res.send(`${JSON.stringify(result)} added`)
+    })
+})
